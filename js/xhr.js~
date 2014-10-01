@@ -1,0 +1,100 @@
+//console.log(window.location.pathname + ' :xhr.js');
+// -----------------------------------------------
+var _json, _httpResponse;
+
+var getUrlHttpGET = function(url, params) {
+    return url + params;
+};
+var getUrlHttpPOST = function(url) {
+    return url;
+};
+var getParamHttpGET = function(){
+    return {
+        "redirect_uri": secret_info.installed.redirect_uris[0],
+        "client_id": secret_info.installed.client_id,
+        "scope": "https://www.googleapis.com/auth/plus.login",
+        "response_type": "code"
+    };
+};
+var getParamHttpPOST = function(ref) {
+    if(ref !== undefined && ref === "refresh" && _token !== undefined) {
+        return {
+            "refresh_token": _token.refresh_token,
+            "client_id": secret_info.installed.client_id,
+            "client_secret": secret_info.installed.client_secret,
+            "grant_type": "refresh_token",
+        };
+    } else {
+        return {
+            "redirect_uri": secret_info.installed.redirect_uris[0],
+            "client_id": secret_info.installed.client_id,
+            "client_secret": secret_info.installed.client_secret,
+            "grant_type": "authorization_code",
+        };
+    }
+};
+
+// collection XMLHTTPRequest callback's
+var cbOAuth = function(_this) {
+    // OAuth.
+    console.log('HttpRequest Done.');
+    console.log(_this);
+    cbXhr(_this.response);
+};
+var cbRestAPI = function(_this) {
+    // return result for REST API
+    console.log('restAPICallback');
+    console.log(_this);
+    _httpResponse = _this.response; // sample.
+};
+
+// MAIN 
+// -----------------------------------------------------
+var getXMLHttpRequest = function(cb) {
+    var _req = new XMLHttpRequest();
+
+    // set callback function to XMLHttpRequest.onreadystatechange.
+    _req.onreadystatechange = function() {
+        console.log('xhr.readyState: ', _req.readyState);
+        if(this.readyState === 4 && this.status === 200){
+            cb(this);
+        }
+    };
+
+    // implements XMLHTTPRequest functions.
+    return function(method, url, requestQuery, headers) {
+        var _method = method || 'GET';
+        console.log('requestQuery: ' + requestQuery);
+        var _data = requestQuery;
+        console.log('data: ' + _data);
+        if(_method.toUpperCase() === 'POST') {
+            _req.open(_method, url, false);
+            console.log('add Header: Content-Type');
+            // set Request Headers.
+            _req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            if(headers !== undefined && (typeof headers) === 'object'){
+                for(var h in headers) {
+                    console.log("add Header:" + h);
+                    _req.setRequestHeader(h, headers[h]);
+                }
+            } else {
+                console.log("None other http-headers...");
+            }
+            // send Http Request.
+            console.log(_req);
+            //_req.send(_data);
+            _req.send(_data);
+        }
+        else if (_method.UpperCase() === 'GET'){
+            // concat URL for GET.
+            var _url = url + '?' + _data;
+            console.log('[INFO] GET _url: ' + _url);
+            _req.open(_method, _url);
+            _req.send();
+        } else {
+            console.log('[Error] Method is Unknown.');
+        }
+        return _req;
+    };
+};
+

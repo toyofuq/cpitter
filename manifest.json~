@@ -1,0 +1,41 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
+  "version": "0.2.0",
+  "icons": {
+    "16": "img/icon-16.png",
+    "48": "img/icon-48.png",
+    "128": "img/icon-128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "img/icon-19.png",
+      "38": "img/icon-38.png"
+    },
+    "default_popup": "popup/popup.html"
+  },
+  "permissions": [
+    "https://*.twitter.com/*",
+    "http://v157-7-155-131.z1d2.static.cnode.jp/callback/*",
+    "https://*./",
+    "http://*./",
+    "contextMenus",
+    "location",
+    "tabs"
+  ],
+  "background": {
+    "persistent": true,
+    "page": "background.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://api.twitter.com/oauth/authorize"],
+      "js": ["js/contentscript.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "content_security_policy": "script-src 'self' https:// chrome-extension://;object-src 'self'"
+  //"content_security_policy": "script-src 'self' 'nonce-$RANDOM' https:// chrome-extension://;object-src 'self'"
+}

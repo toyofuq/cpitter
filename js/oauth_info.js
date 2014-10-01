@@ -1,0 +1,44 @@
+// ---------------------------------------------------
+var oauth_info = {
+    oauth_consumer_key: '8Eee4AoDyzzSIyvW7QybgZNZJ',
+    oauth_consumer_secret: 'dFjW9XZjwO3onURSx71w0YkwCJ1CnLLT1Wn3J6AodTXCgX5EVG',
+    oauth_token: '',
+    oauth_token_secret: '',
+    oauth_verifier: ''
+};
+// for access URIs.
+var api_uri = 'https://api.twitter.com/1.1/';
+var api_uri_old = 'https://api.twitter.com/1.0/';
+var app_only_authentication_uri = 'https://api.twitter.com/oauth2/token';
+// oauth1.0 flow(1) 
+var request_token_uri = 'https://api.twitter.com/oauth/request_token';
+// oauth1.0 flow(2) 
+var authorize_uri = 'https://api.twitter.com/oauth/authorize';
+// oauth1.0 flow(3) 
+var access_token_uri = 'https://api.twitter.com/oauth/access_token';
+// 
+var oauth_nonce = '';
+var oauth_timestamp = function(){
+    return Math.floor(Date.now()/1000);
+}
+var oauth_signature_method = 'HMAC-SHA1';
+var oauth_version = '1.0';
+var oauth_callback = 'oob';
+var oauth_signature = '';
+
+var getRequestTokenUriParam = function() {
+    // return param for get Request Token...
+    return {
+        'oauth_consumer_key': oauth_info.oauth_consumer_key,
+        'oauth_signature_method': oauth_signature_method,
+        'oauth_version': oauth_version,
+        'oauth_callback': oauth_callback,
+        'oauth_timestamp': oauth_timestamp(),
+        'oauth_nonce': genRandomString(32)
+    };
+};
+var getAccessTokenUriParam = function() {
+    return {
+        'free': ''
+    };
+};
